@@ -28,28 +28,34 @@ app.get("/api/getPhotoData/", async (req, res) => {
 	// const arrayBuffer = await response.arrayBuffer();
 	// const base64 = Buffer.from(arrayBuffer).toString("base64");
 
-	const response = await axios({
-		method: "get",
-		url:
-			item.mimeType == "video/mp4"
-				? `${item.baseUrl}=dv`
-				: `${item.baseUrl}=d`,
-		responseType: "arraybuffer",
-	});
+	try {
+		const response = await axios({
+			method: "get",
+			url:
+				item.mimeType == "video/mp4"
+					? `${item.baseUrl}=dv`
+					: `${item.baseUrl}=d`,
+			responseType: "arraybuffer",
+		});
 
-	const base64 = Buffer.from(response.data, "binary").toString("base64");
+		const base64 = Buffer.from(response.data, "binary").toString("base64");
 
-	const fileDate = item.mediaMetadata.creationTime.split("T")[0];
+		const fileDate = item.mediaMetadata.creationTime.split("T")[0];
 
-	const newPhoto = {
-		base64,
-		filename: fileDate + "__" + item.filename,
-	};
+		const newPhoto = {
+			base64,
+			filename: fileDate + "__" + item.filename,
+		};
 
-	// res.status(200).json(newPhoto);
-	console.log("perfecto");
-	res.send(newPhoto);
+		// res.status(200).json(newPhoto);
+		console.log("perfecto");
+		res.send(newPhoto);
+	} catch (err) {
+		console.log("cant get photo data: ", err);
+		res.status(401).end();
+	}
 });
+
 
 app.get("/api/getPhoto/", async (req, res) => {
 	const photo = req.query.photo;
@@ -79,7 +85,7 @@ app.get("/api/getPhoto/", async (req, res) => {
 		res.status(200).json(newPhoto);
 	} catch (err) {
 		console.log("cant get photo data: ", err);
-        res.status(401).end();
+		res.status(401).end();
 	}
 });
 
