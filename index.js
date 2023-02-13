@@ -7,6 +7,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/hola", () => {
+    res.send('hola')
+})
+
 app.get("/api/getPhotoData/", async (req, res) => {
 	console.log("/api/getPhotoData");
 	const { photo } = req.query;
